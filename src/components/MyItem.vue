@@ -1,13 +1,22 @@
 <template>
     <li class="todo-myitem">
-        <input type="checkbox" class="todo-myitem-checkbox">
-        <span class="todo-myitem-span">大撒大撒</span>
+        <input type="checkbox" :checked="todo.done" class="todo-myitem-checkbox" @change="changeCheckbox(todo.id)">
+        <span class="todo-myitem-span">{{ todo.title }}</span>
+        <button class="todo-myitem-deletebutton" @click="deleteItem(todo.id)">删除</button>
     </li>
 </template>
 
 <script>
 export default {
-    name: 'MyItem'
+    name: 'MyItem',
+    props: ['todo', 'changeCheckbox', 'deleteTodo'],
+    methods: {
+        deleteItem(id) {
+            if (confirm('确定删除吗?')) {
+                this.deleteTodo(id)
+            }
+        }
+    }
 }
 </script>
 
@@ -23,8 +32,20 @@ export default {
     height: 32px;
     display: flex;
     align-items: center;
+}
 
+.todo-myitem:hover {
+    background-color: rgb(112, 112, 112);
+}
 
+.todo-myitem-deletebutton {
+    margin-left: auto;
+    display: none;
+}
+
+.todo-myitem:hover button {
+    display: block;
+    background-color: orangered;
 }
 
 .todo-myitem .todo-myitem-span {
