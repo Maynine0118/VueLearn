@@ -16,12 +16,7 @@ export default {
     components: { MyHeader, MyList, MyFooter },
     data() {
         return {
-            todos: [
-                { id: '001', title: '吃饭', done: true },
-                { id: '002', title: '抽烟', done: false },
-                { id: '003', title: '喝酒', done: false },
-                { id: '004', title: '烫头', done: false }
-            ]
+            todos: JSON.parse(localStorage.getItem('todos')) || []
         }
     },
     methods: {
@@ -48,6 +43,18 @@ export default {
             this.todos.forEach((todo) => {
                 todo.done = value
             })
+        }
+    },
+    watch: {
+        //简写形式不能深度检测，当勾选改变时，无法存储勾选情况
+        // todos(value) {
+        //     localStorage.setItem('todos', JSON.stringify(value))
+        // }
+        todos: {
+            deep: true,
+            handler(value) {
+                localStorage.setItem('todos', JSON.stringify(value))
+            }
         }
     }
 }
