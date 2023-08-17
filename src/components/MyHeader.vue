@@ -7,12 +7,18 @@ import { nanoid } from 'nanoid'
 
 export default {
     name: 'MyHeader',
-    props: ['addTodo'],
+    // props: ['addTodo'],
     methods: {
+        // add(e) {
+        //     if (!e.target.value.trim()) return alert('输入不能为空')
+        //     const todo = { id: nanoid(), title: e.target.value, done: false }
+        //     this.addTodo(todo)
+        //     e.target.value = ''
+        // }
         add(e) {
             if (!e.target.value.trim()) return alert('输入不能为空')
             const todo = { id: nanoid(), title: e.target.value, done: false }
-            this.addTodo(todo)
+            this.$emit('addTodo', todo)
             e.target.value = ''
         }
     }

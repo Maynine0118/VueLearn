@@ -2,14 +2,14 @@
     <div class="todo-myfooter" v-if="total">
         <input type="checkbox" class="todo-myitem-checkbox" :checked="AllDone" @change="checkAll">
         <span class="todo-myfooter-span">已完成{{ donetotal }}/{{ total }}</span>
-        <button class="todo-myfooter-button" @click="clearDone">清除已完成任务</button>
+        <button class="todo-myfooter-button" @click="clearTodo">清除已完成任务</button>
     </div>
 </template>
 
 <script>
 export default {
     name: 'MyFooter',
-    props: ['todos', 'clearDone', 'selectAll'],
+    props: ['todos'],
     computed: {
         //计算已完成的
         donetotal() {
@@ -29,7 +29,11 @@ export default {
     methods: {
         //全选或全不选
         checkAll(e) {
-            this.selectAll(e.target.checked)
+            // this.selectAll(e.target.checked)
+            this.$emit('selectAll', e.target.checked)
+        },
+        clearTodo() {
+            this.$emit('clearDone')
         }
     }
 }

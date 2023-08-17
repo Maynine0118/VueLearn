@@ -1,21 +1,48 @@
 <template>
-    <li class="todo-myitem">
-        <input type="checkbox" :checked="todo.done" class="todo-myitem-checkbox" @change="changeCheckbox(todo.id)">
-        <span class="todo-myitem-span">{{ todo.title }}</span>
-        <button class="todo-myitem-deletebutton" @click="deleteItem(todo.id)">删除</button>
-    </li>
+    <transition appear name="animate__animated animate__bounce" enter-active-class="animate__fadeInLeft"
+        leave-active-class="animate__fadeOutLeft">
+        <li class="todo-myitem">
+            <input type="checkbox" :checked="todo.done" class="todo-myitem-checkbox" @change="changeCheckbox(todo.id)">
+            <span class="todo-myitem-span" v-show="!todo.isEdit">{{ todo.title }}</span>
+            <input class="todo-myitem-input" v-show="todo.isEdit" :value="todo.title" @blur="handleBlur(todo, $event)"
+                ref="inputTitle">
+            <button class="todo-myitem-editbutton" @click="handleEdit(todo)">编辑</button>
+            <button class="todo-myitem-deletebutton" @click="deleteItem(todo.id)">删除</button>
+        </li>
+    </transition>
 </template>
 
 <script>
+
+import 'animate.css'
 export default {
     name: 'MyItem',
-    props: ['todo', 'changeCheckbox', 'deleteTodo'],
+    props: ['todo'],
     methods: {
         deleteItem(id) {
             if (confirm('确定删除吗?')) {
-                this.deleteTodo(id)
+                this.$bus.$emit('deleteTodo', id)
             }
+        },
+        changeCheckbox(id) {
+            this.$bus.$emit('changeCheckbox', id)
+        },
+        handleEdit(todo) {
+            if (Object.prototype.hasOwnProperty.call(todo, 'isEdit')) {
+                todo.isEdit = true
+            } else {
+                this.$set(this.todo, 'isEdit', true)
+            }
+            this.$nextTick(function () {
+                this.$refs.inputTitle.focus()
+            })
+        },
+        handleBlur(todo, e) {
+            todo.isEdit = false
+            if (!e.target.value.trim()) return alert('输入不能为空')
+            this.$bus.$emit('handleBlur', todo.id, e.target.value)
         }
+
     }
 }
 </script>
@@ -38,8 +65,13 @@ export default {
     background-color: rgb(112, 112, 112);
 }
 
-.todo-myitem-deletebutton {
+.todo-myitem-editbutton {
     margin-left: auto;
+    display: none;
+}
+
+.todo-myitem-deletebutton {
+    margin-left: 5px;
     display: none;
 }
 
@@ -49,6 +81,10 @@ export default {
 }
 
 .todo-myitem .todo-myitem-span {
+    margin-left: 16px;
+}
+
+.todo-myitem-input {
     margin-left: 16px;
 }
 
